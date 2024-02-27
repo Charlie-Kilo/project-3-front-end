@@ -1,0 +1,46 @@
+body {
+  background-color: #333; /* Dark background color */
+  color: #fff; /* Light text color */
+}
+
+button {
+  background-color: #444; /* Dark button background color */
+  color: #fff; /* Light text color */
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #555; /* Slightly lighter background color on hover */
+}
+
+input[type="url"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #555; /* Darker border color */
+  background-color: #444; /* Dark input background color */
+  color: #fff; /* Light text color */
+}
+
+input[type="url"]:focus {
+  outline: none;
+  border-color: #fff; /* White border color on focus */
+}
+
+.modal-content {
+  background-color: #555; /* Dark modal background color */
+  color: #fff; /* Light text color */
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+}
+
+.modal-content button {
+  margin-top: 10px;
+}
