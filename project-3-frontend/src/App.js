@@ -22,13 +22,13 @@ const FeedPage = () => {
   ]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [newPostUrl, setNewPostUrl] = useState('');
-  const [lastImageUrl, setLastImageUrl] = useState('');
+  const [recievedUrl, setReturnedUrl] = useState('');
   const [requestId, setRequestId] = useState('');
   const [descriptionModalIsOpen, setDescriptionModalIsOpen] = useState(false);
   const [description, setDescription] = useState('');
   const [metadata, setMetadata] = useState({
     label: '',
-    type: '',
+    type_: '',
     season: '',
     show_name: '',
     designer: ''
@@ -50,18 +50,18 @@ const FeedPage = () => {
 
   const addPost = async (e) => {
     e.preventDefault();
-    
+  
     try {
       const requestId = generateRequestId();
       setRequestId(requestId);
   
-      console.log('Request Payload:', { url: newPostUrl, requestId });
+      console.log('Request Payload:', { url: newPostUrl, requestId }); // Change key to "url"
       const response = await fetch('http://localhost:3031/url', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url: newPostUrl, requestId }),
+        body: JSON.stringify({ url: newPostUrl, requestId }), // Change key to "url"
       });
   
       if (!response.ok) {
@@ -69,22 +69,23 @@ const FeedPage = () => {
       }
   
       const data = await response.json();
-      setLastImageUrl(data.URL); // Update to use data.URL instead of data.url
-      
+      setReturnedUrl(data.URL);
+  
       openDescriptionModal();
-      
-      setReceivedData({ submitted_url: data.URL, requestID: data.requestId }); // Update to use data.URL instead of data.url
+  
+      setReceivedData({ submitted_url: data.URL, requestID: data.requestId });
     } catch (error) {
       console.error('Error adding post:', error);
     }
   };
 
 
+
   const handleDescriptionSubmit = async (e) => {
     e.preventDefault();
-    
+  
     try {
-      const response = await fetch('YOUR_API_ENDPOINT_URL_FOR_DESCRIPTION', {
+      const response = await fetch('http://localhost:3031/dynamo', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +93,8 @@ const FeedPage = () => {
         body: JSON.stringify({ 
           ...metadata,
           description,
-          ...receivedData,
+          url: recievedUrl,
+          request_id: requestId,
         }),
       });
       
@@ -201,37 +203,50 @@ const FeedPage = () => {
         }
       }}
     >
-      <h2>Add Description</h2>
+    <h2>Add Description</h2>
       {receivedData && (
           <>
             <p>Submitted URL: {receivedData.submitted_url}</p>
             <p>Request ID: {receivedData.requestID}</p>
           </>
-        )}
+      )}
       <form onSubmit={handleDescriptionSubmit}>
+      <label>
+      Label:
+      <input
+        type="text"
+        value={metadata.label}
+        onChange={(e) => setMetadata({ ...metadata, label: e.target.value })}
+        placeholder="Label"
+        required
+        style={{ width: '100%', padding: '5px', marginBottom: '10px' }}
+      />
+    </label>
         <label>
-          Label:
-          <input
-            type="text"
-            value={metadata.label}
-            onChange={(e) => setMetadata({ ...metadata, label: e.target.value })}
-            placeholder="Label"
-            required
-            disabled
-            style={{ width: '100%', padding: '5px', marginBottom: '10px' }}
-          />
-        </label>
-        <label>
-          Type:
-          <input
-            type="text"
-            value={metadata.type}
-            onChange={(e) => setMetadata({ ...metadata, type: e.target.value })}
-            placeholder="Type"
-            required
-            style={{ width: '100%', padding: '5px', marginBottom: '10px' }}
-          />
-        </label>
+        Type:
+        <select
+          value={metadata.type_}
+          onChange={(e) => setMetadata({ ...metadata, type_: e.target.value })}
+          required
+          style={{ width: '100%', padding: '5px', marginBottom: '10px' }}
+        >
+          <option value="">Select Type</option>
+          <option value="Graphic Shirt">Graphic Shirt</option>
+          <option value="Shirt">Shirt</option>
+          <option value="Dress Shirt">Dress Shirt</option>
+          <option value="Pants">Pants</option>
+          <option value="Shorts">Shorts</option>
+          <option value="Shoes">Shoes</option>
+          <option value="Sneakers">Sneakers</option>
+          <option value="Boots">Boots</option>
+          <option value="Outerwear">Outerwear</option>
+          <option value="Sartorial">Sartorial</option>
+          <option value="Accessories">Accessories</option>
+          <option value="Bags">Bags</option>
+          <option value="Sunglasses">Sunglasses</option>
+          <option value="Jewelery">Jewelery</option>
+        </select>
+      </label>      
         <label>
           Season:
           <input
