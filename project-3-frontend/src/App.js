@@ -54,7 +54,7 @@ const FeedPage = () => {
     try {
       const requestId = generateRequestId();
       setRequestId(requestId);
-
+  
       console.log('Request Payload:', { url: newPostUrl, requestId });
       const response = await fetch('http://localhost:3031/url', {
         method: 'POST',
@@ -69,15 +69,16 @@ const FeedPage = () => {
       }
   
       const data = await response.json();
-      setLastImageUrl(data.url);
+      setLastImageUrl(data.URL); // Update to use data.URL instead of data.url
       
       openDescriptionModal();
       
-      setReceivedData({ final_image_path: data.url, requestId });
+      setReceivedData({ submitted_url: data.URL, requestID: data.requestId }); // Update to use data.URL instead of data.url
     } catch (error) {
       console.error('Error adding post:', error);
     }
   };
+
 
   const handleDescriptionSubmit = async (e) => {
     e.preventDefault();
@@ -203,8 +204,8 @@ const FeedPage = () => {
       <h2>Add Description</h2>
       {receivedData && (
           <>
-            <p>Final Image Path: {receivedData.final_image_path}</p>
-            <p>API Gateway URL: {receivedData.apiGatewayURL}</p>
+            <p>Submitted URL: {receivedData.submitted_url}</p>
+            <p>Request ID: {receivedData.requestID}</p>
           </>
         )}
       <form onSubmit={handleDescriptionSubmit}>
